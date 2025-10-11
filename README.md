@@ -16,6 +16,12 @@
 
 # Spring
 <details>
+  <summary><b>스프링 프레임워크에서 MVC가 어떻게 동작하나요?</b></summary>
+  <hr />
+  우선 요청이 들어오면 필터가 동작합니다. 필터 체인을 거치면서 요청을 처리한 이후 DispatcherServelet에 진입합니다. 그 뒤 HandlerMapping을 통해 요청을 처리하기 적절한 Handler를 찾은 뒤, 인터셉터의 preHandle이 동작합니다. 그리고 Handler의 응답을 처리할 HandlerAdapter를 선택합니다. 그 다음 ArgumentResolver에서 RequestBody나 PathVariable과 같이 파라미터 타입에 알맞게 요청 정보를 변환합니다. Handler가 실행된 뒤 해당 반환 값을 Adapter가 적절히 변환합니다. 그 다음 인터셉터의 postHandle이 동작하고, 만약 뷰 렌더링이 필요하면 뷰 리졸버가 동작하여 뷰 렌더링을 거치게 되고 모든 처리가 완료된 후 인터셉터의 afterCompletion이 동작합니다. 마지막으로 필터 체인을 역순으로 거치게 됩니다.
+</details>
+
+<details>
 <summary><b>@Async는 어떻게 동작하나요?</b></summary>
 <hr />
 @Async는 스프링 AOP를 통해 동작합니다.
