@@ -43,7 +43,7 @@ AOP를 활용할 때 우선 같은 클래스 내에서 호출하거나 접근 �
 
 # JPA
 <details>
-<summary><b>엔티티의 상태에 대해 설명해주세요</b></summary>
+<summary><b>엔티티 상태에 대해 설명해주세요</b></summary>
 <hr />
 엔티티의 상태는 비영속(New/Transient), 영속(Managed), 준영속(Detached), 삭제(Removed) 4가지가 존재합니다. 
 비영속은 엔티티 인스턴스를 생성했지만, 아직 영속성 컨텍스트에 관리되지 않은 상태를 의미합니다. 
