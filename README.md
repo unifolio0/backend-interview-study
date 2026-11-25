@@ -18,7 +18,7 @@
 <details>
   <summary><b>스프링 프레임워크에서 MVC가 어떻게 동작하나요?</b></summary>
   <hr />
-  요청이 들어오면 필터가 동작합니다. 필터 체인을 거치면서 요청을 처리한 이후 DispatcherServelet에 진입합니다. 그 뒤 HandlerMapping을 통해 요청을 처리하기 적절한 Handler를 찾은 뒤, 인터셉터의 preHandle이 동작합니다. 그리고 Handler의 응답을 처리할 HandlerAdapter를 선택합니다. 그 다음 ArgumentResolver에서 RequestBody나 PathVariable과 같이 파라미터 타입에 알맞게 요청 정보를 변환합니다. Handler가 실행된 뒤 해당 반환 값을 Adapter가 적절히 변환합니다. 그 다음 인터셉터의 postHandle이 동작하고, 만약 뷰 렌더링이 필요하면 뷰 리졸버가 동작하여 뷰 렌더링을 거치게 되고 모든 처리가 완료된 후 인터셉터의 afterCompletion이 동작합니다. 마지막으로 필터 체인을 역순으로 거치게 됩니다.
+  요청이 들어오면 필터가 동작합니다. 필터 체인을 거치면서 요청을 처리한 이후 DispatcherServlet에 진입합니다. 그 뒤 HandlerMapping을 통해 요청을 처리하기 적절한 Handler와 인터셉터 목록을 찾고, 그 Handler를 실행할 HandlerAdapter를 선택합니다. 그 다음 인터셉터의 preHandle이 동작합니다. 이후 HandlerAdapter가 ArgumentResolver를 통해 PathVariable이나 RequestBody 같은 요청 정보를 파라미터 타입에 맞게 변환하고 Handler를 실행합니다. Handler의 반환 값은 ReturnValueHandler가 처리하는데, @ResponseBody라면 HttpMessageConverter가 JSON 등으로 변환해 응답 본문에 바로 씁니다. 그 다음 인터셉터의 postHandle이 동작하고, 뷰 렌더링이 필요하면 ViewResolver가 뷰를 찾아 렌더링합니다. 모든 처리가 완료된 후 인터셉터의 afterCompletion이 동작하고, 마지막으로 필터 체인을 역순으로 거치게 됩니다. 이때 @ResponseBody 응답은 postHandle 전에 이미 쓰여 있기 때문에 postHandle에서 응답을 바꿀 수 없고, 예외가 발생하면 postHandle은 건너뛰고 afterCompletion만 동작합니다.
 </details>
 
 <details>
@@ -48,6 +48,6 @@ AOP를 활용할 때 우선 같은 클래스 내에서 호출하거나 접근 �
 엔티티의 상태는 비영속(New/Transient), 영속(Managed), 준영속(Detached), 삭제(Removed) 4가지가 존재합니다. 
 비영속은 엔티티 인스턴스를 생성했지만, 아직 영속성 컨텍스트에 관리되지 않은 상태를 의미합니다. 
 영속은 엔티티가 영속성 컨텍스트에 의해 관리되는 상태로 엔티티 매니저의 `persist()` 메소드 호출 후, 영속성 컨텍스트에 저장되면 영속 상태가 됩니다. 
-준영속은 영속성 컨텍스트에서 분리된 상태로 `commit()` 이나 `flush()`가 호출되면 준영속 상태가 됩니다. 
+준영속은 영속성 컨텍스트에서 분리된 상태로 `detach()`로 특정 엔티티를 분리하거나, `clear()`로 영속성 컨텍스트를 초기화하거나, `close()`로 닫으면 준영속 상태가 됩니다. `flush()`는 변경 내용을 DB에 반영할 뿐이고 엔티티는 계속 영속 상태로 남습니다. 다만 스프링처럼 트랜잭션 범위의 영속성 컨텍스트를 쓰면 트랜잭션이 끝날 때 영속성 컨텍스트도 닫히기 때문에, 그 이후에는 엔티티가 준영속 상태가 됩니다. 
 삭제는 엔티티 매니저의 `remove()` 메소드를 호출하면 삭제 상태가 되며 DB에서도 삭제됩니다.
 </details>
